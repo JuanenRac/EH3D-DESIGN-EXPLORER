@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | 🇪🇸 <b>Español</b> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-EXPLORER: planificado como un entorno para comparar y analizar alternativas o ramas de diseño. Todavía sin código.
+### EH3D-DESIGN-EXPLORER: comparar las alternativas de un diseño según varios criterios sin esconder ninguna tras una sola puntuación. Código inicial.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Comprobación de honestidad - lo que se ejecuta hoy:** nada. EH3D-DESIGN-EXPLORER solo está planificado: no tiene código, ni pruebas propias, y nunca se ha ejecutado. Lo que existe es la base que lleva todo repositorio de la suite, más el alcance, los requisitos, las dependencias, el modelo de amenazas y las decisiones escritos en `docs/`.
+**Comprobación de honestidad - lo que se ejecuta hoy:** una biblioteca de Rust y una línea de comandos que leen un conjunto de alternativas (parámetros y cifras que nombran cada una la herramienta y la versión que las produjo) y los criterios con su dirección, comprueban el conjunto (nombres repetidos, cifras que faltan, cifras sin fuente), muestran el lugar de cada alternativa (no dominada, o dominada y por quién, sin nombrar una única mejor), listan lo que difiere entre dos alternativas y generan la rejilla de un barrido paramétrico en un orden fijo. Todo se ha ejecutado solo con datos hechos por sus propias pruebas. Lo que no existe: el cálculo de las cifras (vienen de otras herramientas), la comparación de ramas de un historial de diseño y cualquier búsqueda más allá de la rejilla simple.
 
 ---
 
@@ -46,14 +46,14 @@ Cada línea es una parte de este repositorio y la luz dice hasta dónde llega ho
 | Área | Estado | Qué significa aquí |
 |---|---|---|
 | Comprobaciones del repositorio | 🟡 | La comprobación del repositorio, la de las imágenes y las 3 pruebas de la base se ejecutan en el CI y pasan. |
-| Pruebas | 🟠 | Solo la base tiene pruebas (3); el código del repositorio tendrá las suyas a medida que se escriba. |
+| Pruebas | 🟡 | Las 19 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. |
 | Hardware real | 🟠 | No se ha ejecutado en ninguna máquina ni placa: nada de aquí se ha probado en hardware. |
-| Función planificada | 🔴 | Sin empezar: nada de la función planificada está escrito. |
-| Requisitos | 🔴 | Todos los requisitos están solo planificados: ninguno está implementado ni verificado. |
+| Función planificada | 🟠 | Escrito: las alternativas con parámetros y cifras con fuente, el conjunto no dominado con quién supera a cada una de las demás, la diferencia entre dos alternativas y la rejilla determinista. Sin escribir: la comparación de ramas del historial de diseño y cualquier búsqueda más lista. |
+| Requisitos | 🟠 | 4 de los 5 requisitos están en prototipo; la comparación de ramas del historial solo está planificada. Ninguno está validado. |
 
 ## 🎯 Resumen
 
-* **Planificado:** EH3D-DESIGN-EXPLORER pretende ser un entorno para comparar y analizar alternativas o ramas de diseño. Se planea como una biblioteca sin ventana, con interfaz de línea de comandos y, cuando proceda, un tipo de tarea del servidor. Nada de esto existe todavía.
+* **Lo que existe:** una biblioteca y una línea de comandos, sin ventana, que comprueban un conjunto de alternativas (`check`), muestran dónde está cada una (`front`), listan las diferencias entre dos (`compare`) y generan un barrido paramétrico (`sweep`). **Planificado:** la comparación de ramas del historial de diseño y un tipo de tarea del servidor.
 
 ## 🧩 Papel en EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-EXPLORER/
 │   ├── NOT_YET.md RULES.md                      ideas para más adelante y reglas para escribir código
 │   └── adr/                                     los registros de decisiones aceptadas
 ├── AGENTS.md                                    reglas para quien cambia el repositorio
+├── src/                                         la biblioteca y la línea de comandos
+├── Cargo.toml Cargo.lock deny.toml              paquete de Rust y política de dependencias
 ├── tools/                                       la comprobación del repositorio, sus pruebas y las herramientas de las imágenes
 ├── images/                                      banner y las imágenes de Arquitectura y Estructura del repositorio
 ├── .github/                                     flujos de CI y del panel, plantillas de issues y pull requests
@@ -121,7 +123,7 @@ EH3D-DESIGN-EXPLORER/
 
 **Límites conocidos hoy**
 
-* Solo planificado: no hay código, no se ha ejecutado nada y ningún requisito está implementado.
+* Código inicial: solo se ha ejecutado con datos hechos por sus propias pruebas; no calcula ninguna cifra, no aplica ningún cambio a un diseño y no inicia ningún trabajo.
 
 **Siguiente**
 

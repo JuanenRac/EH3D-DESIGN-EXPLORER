@@ -6,7 +6,7 @@
 
 <p align="center">🇺🇸 <b>English</b> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-EXPLORER: planned as an environment to compare and analyse design alternatives or branches. No code yet.
+### EH3D-DESIGN-EXPLORER: compare the alternatives of a design across several criteria without hiding any behind a single score. Early code.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Honesty check - what actually runs today:** nothing. EH3D-DESIGN-EXPLORER is only planned: it has no code, no tests of its own and has never run. What exists is the base every repository of the suite carries, plus the written scope, requirements, dependencies, threat model and decisions in `docs/`.
+**Honesty check - what actually runs today:** a Rust library and a command line that read a set of alternatives (parameters, and figures that each name the tool and version that produced them) and the criteria with their direction, check the set (repeated names, missing figures, figures without a source), show the place of every alternative (non-dominated, or dominated and by whom, with no single best named), list what differs between two alternatives and generate the grid of a parametric sweep in a fixed order. All of it has run only on data made by its own tests. What does not exist: the computation of the figures (they come from other tools), the comparison of branches of a design history and any search beyond the plain grid.
 
 ---
 
@@ -46,14 +46,14 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Repository checks | 🟡 | The repository check, the check of the pictures and the 3 tests of the base run in CI and pass. |
-| Tests | 🟠 | Only the base has tests (3); the code of the repository will get its own as it is written. |
+| Tests | 🟡 | 19 tests of the Rust code and the 3 of the base pass on a computer. They use only data made by the tests themselves. |
 | Real hardware | 🟠 | Not run on any machine or board: nothing here has been tried on hardware. |
-| Planned function | 🔴 | Not started: none of the planned function has been written. |
-| Requirements | 🔴 | Every requirement is only planned: none is implemented or verified. |
+| Planned function | 🟠 | Written: the alternatives with parameters and sourced figures, the non-dominated set with who beats each of the others, the difference between two alternatives and the deterministic grid. Not written: the comparison of branches of the design history and any smarter search. |
+| Requirements | 🟠 | 4 of the 5 requirements are at prototype; the comparison of branches of the history is only planned. None is validated. |
 
 ## 🎯 Overview
 
-* **Planned:** EH3D-DESIGN-EXPLORER is meant to be an environment to compare and analyse design alternatives or branches. It is planned as a library without a window, with a command-line interface and, when it applies, a kind of server task. None of this exists yet.
+* **What exists:** a library and a command line, without a window, that check a set of alternatives (`check`), show where each one stands (`front`), list the differences between two (`compare`) and generate a parametric sweep (`sweep`). **Planned:** the comparison of branches of the design history and a kind of server task.
 
 ## 🧩 Role in EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-EXPLORER/
 │   ├── NOT_YET.md RULES.md                      ideas left for later and rules for writing code
 │   └── adr/                                     the accepted decision records
 ├── AGENTS.md                                    rules for anyone who changes the repository
+├── src/                                         the library and the command line
+├── Cargo.toml Cargo.lock deny.toml              Rust package and policy of the dependencies
 ├── tools/                                       the repository check, its tests and the picture tools
 ├── images/                                      banner and the Architecture and Repository Structure pictures
 ├── .github/                                     CI and dashboard workflows, issue and pull-request templates
@@ -121,7 +123,7 @@ EH3D-DESIGN-EXPLORER/
 
 **Known limits today**
 
-* Planned only: there is no code, nothing has been run and no requirement is implemented.
+* Early code: it has only run on data made by its own tests; it computes no figure itself, applies no change to a design and starts no job.
 
 **Next**
 

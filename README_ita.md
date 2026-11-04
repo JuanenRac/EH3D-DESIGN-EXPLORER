@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | 🇮🇹 <b>Italiano</b> | <a href="README_deu.md">🇩🇪 Deutsch</a> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-EXPLORER: pianificato come un ambiente per confrontare e analizzare alternative o rami di progetto. Ancora senza codice.
+### EH3D-DESIGN-EXPLORER: confrontare le alternative di un progetto secondo più criteri senza nasconderne alcuna dietro un punteggio unico. Codice iniziale.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Verifica di onestà - cosa funziona oggi:** niente. EH3D-DESIGN-EXPLORER è solo pianificato: non ha codice, né test propri, e non è mai stato eseguito. Esistono la base che ogni repository della suite porta con sé, più l'ambito, i requisiti, le dipendenze, il modello delle minacce e le decisioni scritti in `docs/`.
+**Verifica di onestà - cosa funziona oggi:** una libreria Rust e una riga di comando che leggono un insieme di alternative (parametri e cifre che nominano ciascuna lo strumento e la versione che le ha prodotte) e i criteri con la loro direzione, controllano l'insieme (nomi ripetuti, cifre mancanti, cifre senza fonte), mostrano il posto di ogni alternativa (non dominata, o dominata e da chi, senza indicare un'unica migliore), elencano ciò che differisce tra due alternative e generano la griglia di una scansione parametrica in ordine fisso. Tutto è stato eseguito solo su dati prodotti dai propri test. Non esistono: il calcolo delle cifre (vengono da altri strumenti), il confronto dei rami di una cronologia di progetto e qualsiasi ricerca oltre la semplice griglia.
 
 ---
 
@@ -46,14 +46,14 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 | Area | Stato | Cosa significa qui |
 |---|---|---|
 | Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 3 test della base girano nella CI e passano. |
-| Test | 🟠 | Solo la base ha test (3); il codice del repository avrà i propri man mano che viene scritto. |
+| Test | 🟡 | I 19 test del codice Rust e i 3 della base passano su un computer. Usano solo dati prodotti dai test stessi. |
 | Hardware reale | 🟠 | Non eseguito su nessuna macchina né scheda: nulla qui è stato provato su hardware. |
-| Funzione pianificata | 🔴 | Non iniziata: nulla della funzione pianificata è stato scritto. |
-| Requisiti | 🔴 | Tutti i requisiti sono solo pianificati: nessuno è implementato o verificato. |
+| Funzione pianificata | 🟠 | Scritto: le alternative con parametri e cifre con fonte, l'insieme non dominato con chi batte ciascuna delle altre, la differenza tra due alternative e la griglia deterministica. Non scritto: il confronto dei rami della cronologia di progetto e qualsiasi ricerca più intelligente. |
+| Requisiti | 🟠 | 4 dei 5 requisiti sono a livello di prototipo; il confronto dei rami della cronologia è solo pianificato. Nessuno è validato. |
 
 ## 🎯 Panoramica
 
-* **Pianificato:** EH3D-DESIGN-EXPLORER vuole essere un ambiente per confrontare e analizzare alternative o rami di progetto. È pensato come una libreria senza finestra, con interfaccia a riga di comando e, quando serve, un tipo di attività del server. Nulla di tutto questo esiste ancora.
+* **Cosa esiste:** una libreria e una riga di comando, senza finestra, che controllano un insieme di alternative (`check`), mostrano dove si colloca ciascuna (`front`), elencano le differenze tra due (`compare`) e generano una scansione parametrica (`sweep`). **Pianificato:** il confronto dei rami della cronologia di progetto e un tipo di attività del server.
 
 ## 🧩 Ruolo in EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-EXPLORER/
 │   ├── NOT_YET.md RULES.md                      idee per dopo e regole per scrivere il codice
 │   └── adr/                                     i registri delle decisioni accettate
 ├── AGENTS.md                                    regole per chi modifica il repository
+├── src/                                         la libreria e la riga di comando
+├── Cargo.toml Cargo.lock deny.toml              pacchetto Rust e politica delle dipendenze
 ├── tools/                                       il controllo del repository, i suoi test e gli strumenti delle immagini
 ├── images/                                      banner e le immagini di Architettura e Struttura del repository
 ├── .github/                                     workflow di CI e della dashboard, modelli di issue e pull request
@@ -121,7 +123,7 @@ EH3D-DESIGN-EXPLORER/
 
 **Limiti noti oggi**
 
-* Solo pianificato: non c'è codice, non è stato eseguito nulla e nessun requisito è implementato.
+* Codice iniziale: eseguito solo su dati dei propri test; non calcola alcuna cifra, non applica alcuna modifica a un progetto e non avvia alcun lavoro.
 
 **Prossimi passi**
 

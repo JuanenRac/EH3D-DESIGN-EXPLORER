@@ -6,7 +6,7 @@
 
 <p align="center"><a href="README.md">🇺🇸 English</a> | <a href="README_spa.md">🇪🇸 Español</a> | <a href="README_fra.md">🇫🇷 Français</a> | <a href="README_ita.md">🇮🇹 Italiano</a> | 🇩🇪 <b>Deutsch</b> | <a href="README_zho.md">🇨🇳 中文</a> | <a href="README_jpn.md">🇯🇵 日本語</a> | <a href="README_por.md">🇵🇹 Português</a></p>
 
-### EH3D-DESIGN-EXPLORER: geplant als eine Umgebung zum Vergleichen und Analysieren von Entwurfsalternativen oder -zweigen. Noch kein Code.
+### EH3D-DESIGN-EXPLORER: die Alternativen eines Entwurfs nach mehreren Kriterien vergleichen, ohne eine hinter einer einzigen Punktzahl zu verstecken. Früher Code.
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
@@ -19,7 +19,7 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** nichts. EH3D-DESIGN-EXPLORER ist nur geplant: Es gibt keinen Code, keine eigenen Tests, und es ist nie gelaufen. Vorhanden sind die Basis, die jedes Repository der Suite trägt, sowie Umfang, Anforderungen, Abhängigkeiten, Bedrohungsmodell und Entscheidungen in `docs/`.
+**Ehrlichkeitscheck - was heute tatsächlich läuft:** eine Rust-Bibliothek und eine Befehlszeile, die eine Menge von Alternativen (Parameter und Zahlen, die jeweils Werkzeug und Version ihrer Herkunft nennen) und die Kriterien mit ihrer Richtung lesen, die Menge prüfen (doppelte Namen, fehlende Zahlen, Zahlen ohne Quelle), den Platz jeder Alternative zeigen (nicht dominiert, oder dominiert und von wem, ohne eine einzige beste zu nennen), den Unterschied zwischen zwei Alternativen auflisten und das Raster eines Parameterdurchlaufs in fester Reihenfolge erzeugen. Alles lief nur mit Daten der eigenen Tests. Es fehlen: die Berechnung der Zahlen (sie kommen von anderen Werkzeugen), der Vergleich von Zweigen einer Entwurfshistorie und jede Suche jenseits des einfachen Rasters.
 
 ---
 
@@ -46,14 +46,14 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Repository-Prüfungen | 🟡 | Die Repository-Prüfung, die Prüfung der Bilder und die 3 Tests der Basis laufen in der CI und bestehen. |
-| Tests | 🟠 | Nur die Basis hat Tests (3); der Code des Repositorys bekommt seine eigenen, sobald er geschrieben wird. |
+| Tests | 🟡 | Die 19 Tests des Rust-Codes und die 3 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten der Tests selbst. |
 | Echte Hardware | 🟠 | Auf keiner Maschine und keiner Platine ausgeführt: nichts hier wurde auf Hardware ausprobiert. |
-| Geplante Funktion | 🔴 | Nicht begonnen: Von der geplanten Funktion ist nichts geschrieben. |
-| Anforderungen | 🔴 | Alle Anforderungen sind nur geplant: Keine ist umgesetzt oder geprüft. |
+| Geplante Funktion | 🟠 | Geschrieben: die Alternativen mit Parametern und Zahlen mit Quelle, die nicht dominierte Menge mit der Angabe, wer jede andere schlägt, der Unterschied zwischen zwei Alternativen und das deterministische Raster. Nicht geschrieben: der Vergleich von Zweigen der Entwurfshistorie und jede klügere Suche. |
+| Anforderungen | 🟠 | 4 der 5 Anforderungen sind im Prototyp; der Vergleich von Zweigen der Historie ist nur geplant. Keine ist validiert. |
 
 ## 🎯 Überblick
 
-* **Geplant:** EH3D-DESIGN-EXPLORER soll eine Umgebung zum Vergleichen und Analysieren von Entwurfsalternativen oder -zweigen werden. Vorgesehen ist eine Bibliothek ohne Fenster mit Kommandozeile und, wo es passt, einer Art Server-Aufgabe. Nichts davon existiert bisher.
+* **Was es gibt:** eine Bibliothek und eine Befehlszeile ohne Fenster, die eine Menge von Alternativen prüfen (`check`), zeigen, wo jede steht (`front`), die Unterschiede zwischen zwei auflisten (`compare`) und einen Parameterdurchlauf erzeugen (`sweep`). **Geplant:** der Vergleich von Zweigen der Entwurfshistorie und eine Art Serveraufgabe.
 
 ## 🧩 Rolle in EH3D
 
@@ -105,6 +105,8 @@ EH3D-DESIGN-EXPLORER/
 │   ├── NOT_YET.md RULES.md                      Ideen für später und Regeln zum Schreiben von Code
 │   └── adr/                                     die angenommenen Entscheidungsprotokolle
 ├── AGENTS.md                                    Regeln für alle, die das Repository ändern
+├── src/                                         die Bibliothek und die Befehlszeile
+├── Cargo.toml Cargo.lock deny.toml              Rust-Paket und Richtlinie der Abhängigkeiten
 ├── tools/                                       die Repository-Prüfung, ihre Tests und die Bild-Werkzeuge
 ├── images/                                      Banner und die Bilder von Architektur und Repository-Struktur
 ├── .github/                                     CI- und Dashboard-Workflows, Vorlagen für Issues und Pull Requests
@@ -121,7 +123,7 @@ EH3D-DESIGN-EXPLORER/
 
 **Bekannte Grenzen heute**
 
-* Nur geplant: Es gibt keinen Code, nichts wurde ausgeführt und keine Anforderung ist umgesetzt.
+* Früher Code: nur mit Daten der eigenen Tests ausgeführt; er berechnet keine Zahl selbst, wendet keine Änderung auf einen Entwurf an und startet keinen Auftrag.
 
 **Als Nächstes**
 

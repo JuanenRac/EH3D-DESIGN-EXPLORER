@@ -1,6 +1,6 @@
 # EH3D-DESIGN-EXPLORER: scope
 
-Status: **planned**. EH3D-DESIGN-EXPLORER has no code. This page says what it is meant to do, what it will not do, and where it sits. Nothing here has been built or run.
+Status: **early code**. EH3D-DESIGN-EXPLORER has a library and a command line; most of what this page lists is still planned. This page says what it is meant to do, what it will not do, and where it sits. Nothing has been run on real data.
 
 ## Purpose
 
@@ -22,9 +22,9 @@ Environment to compare and analyse alternatives or branches of a design by cost,
 
 ## Planned shape
 
-A library without a window, written in Rust (planned), with a command-line interface and, where it applies, a kind of task for the server. Programs of the suite exchange work through project files or through the server, never by depending on each other.
+A library without a window, written in Rust, with a command-line interface and, where it applies, a kind of task for the server. Programs of the suite exchange work through project files or through the server, never by depending on each other.
 
-Crates, names and file layout will be decided together with the first code; no crate exists yet.
+The package is a single crate (a library and a command line, no window) with `check`, `front`, `compare` and `sweep`; a study and a sweep are JSON files. The comparison of branches of the design history is not written.
 
 ## Where it sits
 
