@@ -3,6 +3,9 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+
+## [0.0.2] - First release: the library, the command line, the stable error codes and the tests
+
 - Add the library: alternatives of a design with parameters and figures that name their source, compared across criteria with a direction, with the non-dominated set, who beats each of the others, and the difference between two alternatives; no single best alternative is named.
 - Add the deterministic parametric sweep (a grid in a fixed order, with a limit on its size) and the stable codes `PHOENIX-DEXP-001` to `PHOENIX-DEXP-004`.
 - Add the command line (`check`, `front`, `compare`, `sweep`) and a settings file; run format, lints and tests of the Rust code on Linux and Windows in the CI.

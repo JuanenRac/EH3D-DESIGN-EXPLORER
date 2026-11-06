@@ -1,6 +1,6 @@
 [package]
 name = "eh3d-design-explorer"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 rust-version = "1.88"
 description = "Comparison of design alternatives across several criteria without hiding any behind a single score: the non-dominated set, the difference between two alternatives and a deterministic parametric sweep"

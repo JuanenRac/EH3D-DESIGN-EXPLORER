@@ -2,7 +2,7 @@
   "schema_version": "1.1",
   "ecosystem": "EH3D",
   "name": "EH3D-DESIGN-EXPLORER",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "role": "tool",
   "stack": "rust",
   "technologies": [
@@ -17,7 +17,7 @@
   "family": "PHOENIX",
   "parent": null,
   "build": "cargo build --release; cargo test",
-  "notes": "Scaffolding v0.0.1: early code. A Rust library and command line that read a set of alternatives of a design (parameters and figures that each name their tool and version) with its criteria, check it, show the place of every alternative (non-dominated, or dominated and by whom) without naming a single best one, list what differs between two alternatives and generate the grid of a parametric sweep in a fixed order. It has only run on data made by its own tests; it computes no figure, applies no change to a design and starts no job, and the comparison of branches of the design history is not written.",
+  "notes": "Scaffolding v0.0.2: early code. A Rust library and command line that read a set of alternatives of a design (parameters and figures that each name their tool and version) with its criteria, check it, show the place of every alternative (non-dominated, or dominated and by whom) without naming a single best one, list what differs between two alternatives and generate the grid of a parametric sweep in a fixed order. It has only run on data made by its own tests; it computes no figure, applies no change to a design and starts no job, and the comparison of branches of the design history is not written.",
   "native_version": {
     "file": "VERSION",
     "pattern": "^(\\d+\\.\\d+\\.\\d+)"
