@@ -15,6 +15,7 @@ pub mod cli;
 pub mod config;
 pub mod error;
 pub mod explore;
+pub mod simulation;
 pub mod sweep;
 
 pub use error::DexpError;

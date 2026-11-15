@@ -46,7 +46,7 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 | Area | Stato | Cosa significa qui |
 |---|---|---|
 | Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 3 test della base girano nella CI e passano. |
-| Test | 🟡 | I 19 test del codice Rust e i 3 della base passano su un computer. Usano solo dati prodotti dai test stessi. |
+| Test | 🟡 | I 27 test del codice Rust e i 3 della base passano su un computer. Usano solo dati prodotti dai test stessi. Includono una simulazione a seme fisso di gli strumenti che calcolano le cifre, con guasti iniettati e ripristino. |
 | Hardware reale | 🟠 | Non eseguito su nessuna macchina né scheda: nulla qui è stato provato su hardware. |
 | Funzione pianificata | 🟠 | Scritto: le alternative con parametri e cifre con fonte, l'insieme non dominato con chi batte ciascuna delle altre, la differenza tra due alternative e la griglia deterministica. Non scritto: il confronto dei rami della cronologia di progetto e qualsiasi ricerca più intelligente. |
 | Requisiti | 🟠 | 4 dei 5 requisiti sono a livello di prototipo; il confronto dei rami della cronologia è solo pianificato. Nessuno è validato. |
