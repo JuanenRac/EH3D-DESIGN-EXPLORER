@@ -46,7 +46,7 @@ Cada linha é uma parte deste repositório e a luz diz até onde chega hoje. É 
 | Área | Estado | O que significa aqui |
 |---|---|---|
 | Verificações do repositório | 🟡 | A verificação do repositório, a das imagens e os 3 testes da base correm na CI e passam. |
-| Testes | 🟡 | Os 19 testes do código Rust e os 3 da base passam num computador. Usam apenas dados feitos pelos próprios testes. |
+| Testes | 🟡 | Os 27 testes do código Rust e os 3 da base passam num computador. Usam apenas dados feitos pelos próprios testes. Incluem uma simulação com semente fixa de as ferramentas que calculam os valores, com falhas injetadas e recuperação. |
 | Hardware real | 🟠 | Não foi executado em nenhuma máquina nem placa: nada aqui foi experimentado em hardware. |
 | Função planeada | 🟠 | Escrito: as alternativas com parâmetros e números com fonte, o conjunto não dominado com quem supera cada uma das outras, a diferença entre duas alternativas e a grelha determinista. Por escrever: a comparação de ramos do histórico de projeto e qualquer pesquisa mais esperta. |
 | Requisitos | 🟠 | 4 dos 5 requisitos estão em protótipo; a comparação de ramos do histórico está apenas planeada. Nenhum está validado. |

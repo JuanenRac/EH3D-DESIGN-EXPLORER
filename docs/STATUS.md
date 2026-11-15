@@ -19,4 +19,4 @@ The official state of each capability is in REQUIREMENTS.md: 5 requirements: 4 `
 
 ## Known technical debt and omitted tests
 
-19 tests of the Rust code and the 3 of the base; the Rust tests build their own studies and never touch real data. Not tested: very large studies. `cargo deny` is not run yet.
+27 tests of the Rust code and the 3 of the base; the Rust tests build their own studies and never touch real data. Eight of them run the simulation (`src/simulation.rs`): a seeded twin of the tools that compute the figures, the three failures that can be injected (a crash, a figure without its source, a figure that is not finite), the comparison that leaves a failed alternative out, and the recovery that runs the failed alternatives again. What is pending is the proof against the real tools. Not tested: very large studies. `cargo deny` is not run yet.

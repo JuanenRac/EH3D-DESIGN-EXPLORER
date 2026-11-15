@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **Simulation mode:** add `src/simulation.rs`, a host twin of the tools that compute the figures: a seeded solver (the same seed gives the same study), three injectable failures (crash, figure without a source, figure that is not finite) and a recovery that runs the failed alternatives again. Eight deterministic tests cover them. The manifest now says `evidence: simulator`; nothing has run against the real tools.
+
 ## [0.0.3] - Split CI with a build cache and a pinned Rust toolchain
 
 - **The shared validation tools are updated:** the validator also runs the workflow and lessons checks of the suite with their latest rules, including a check to run before every push.
