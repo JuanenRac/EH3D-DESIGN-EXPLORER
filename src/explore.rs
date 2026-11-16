@@ -110,8 +110,11 @@ impl Study {
         Ok(study)
     }
 
+    /// An alternative takes part in the comparison only with every criterion measured by a number that is finite: one that diverged would otherwise be beaten by nobody.
     fn complete(&self, c: &Candidate) -> bool {
-        self.criteria.keys().all(|k| c.metrics.contains_key(k))
+        self.criteria
+            .keys()
+            .all(|k| c.metrics.get(k).is_some_and(|m| m.value.is_finite()))
     }
 
     /// Everything that makes a comparison less reliable: repeated names, missing metrics, metrics without a source, numbers that are not finite.
@@ -350,6 +353,16 @@ mod tests {
             ..Config::default()
         };
         assert!(s.placements(&cfg).iter().all(|p| p.non_dominated));
+    }
+
+    #[test]
+    fn an_alternative_with_a_metric_that_is_not_finite_is_incomplete_and_never_on_the_front() {
+        let mut diverged = cand("diverged", 0.1, 10.0);
+        diverged.metrics.insert("temp_c".to_string(), m(f64::NAN));
+        let s = study(vec![diverged, cand("full", 5.0, 80.0)]);
+        let p = s.placements(&Config::default());
+        assert!(p[0].incomplete && !p[0].non_dominated, "{p:?}");
+        assert!(p[1].non_dominated && !p[1].incomplete, "{p:?}");
     }
 
     #[test]

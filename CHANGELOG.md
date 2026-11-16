@@ -4,6 +4,7 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **An alternative with a metric that is not finite is incomplete:** it is flagged incomplete and takes no place on the front; before, a diverged value (not a number) left it marked as not dominated.
 - **Simulation mode:** add `src/simulation.rs`, a host twin of the tools that compute the figures: a seeded solver (the same seed gives the same study), three injectable failures (crash, figure without a source, figure that is not finite) and a recovery that runs the failed alternatives again. Eight deterministic tests cover them. The manifest now says `evidence: simulator`; nothing has run against the real tools.
 
 ## [0.0.3] - Split CI with a build cache and a pinned Rust toolchain
