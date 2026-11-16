@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! The command line. It is a thin layer: parsing the arguments and printing; the work lives in the other modules.
 //!
-//! Exit codes: 0 done and nothing found, 1 the study has findings, 2 the input or the arguments are unusable.
+//! Exit codes: 0 done and nothing found, 1 the study has findings (`check`, and also `front` and `compare`, which run the check first), 2 the input or the arguments are unusable.
 
 use crate::config::Config;
 use crate::error::DexpError;
@@ -19,6 +19,7 @@ eh3d-design-explorer [--config FILE] <command>
   compare <study.json> <first> <second>   the parameters and figures that differ between two alternatives, and which side is better on each
   sweep <spec.json>                       the grid of alternatives of a parametric sweep, in a fixed order
 
+`front` and `compare` run the check first: the findings go to the error output and the exit code is 1, but the answer is still printed.
 Exit codes: 0 done, 1 findings, 2 unusable input.
 ";
 
@@ -35,7 +36,7 @@ fn read_text(path: &Path, limit: u64) -> Result<String, DexpError> {
 
 /// Run the command line with the given arguments (without the program name). Returns the exit code.
 pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> i32 {
-    match dispatch(args, out) {
+    match dispatch(args, out, err) {
         Ok(code) => code,
         Err(None) => {
             let _ = err.write_all(USAGE.as_bytes());
@@ -48,7 +49,30 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> i32 {
     }
 }
 
-fn dispatch(args: &[String], out: &mut dyn Write) -> Result<i32, Option<DexpError>> {
+/// The findings of the check, one line each, on the error output; the exit code to use (1 with findings, 0 without).
+fn report_findings(study: &Study, err: &mut dyn Write) -> i32 {
+    let findings = study.check();
+    for f in &findings {
+        let subject = if f.subject.is_empty() {
+            String::new()
+        } else {
+            format!(" [{}]", f.subject)
+        };
+        let _ = writeln!(err, "{}{}: {}", f.code.as_str(), subject, f.message);
+    }
+    if findings.is_empty() {
+        0
+    } else {
+        let _ = writeln!(err, "# {} findings", findings.len());
+        1
+    }
+}
+
+fn dispatch(
+    args: &[String],
+    out: &mut dyn Write,
+    err: &mut dyn Write,
+) -> Result<i32, Option<DexpError>> {
     let mut args = args.to_vec();
     let mut config = Config::default();
     if args.first().map(String::as_str) == Some("--config") {
@@ -79,13 +103,19 @@ fn dispatch(args: &[String], out: &mut dyn Write) -> Result<i32, Option<DexpErro
         ["front", path] => {
             let study = Study::from_json(&text(path)?, &config).map_err(Some)?;
             let _ = writeln!(out, "{}", pretty(&study.placements(&config)));
-            Ok(0)
+            Ok(report_findings(&study, err))
         }
         ["compare", path, first, second] => {
             let study = Study::from_json(&text(path)?, &config).map_err(Some)?;
             let changes = study.difference(first, second).map_err(Some)?;
             let _ = writeln!(out, "{}", pretty(&changes));
-            Ok(0)
+            if changes.is_empty() {
+                let _ = writeln!(
+                    out,
+                    "# equal: the two alternatives have the same parameters and figures"
+                );
+            }
+            Ok(report_findings(&study, err))
         }
         ["sweep", path] => {
             let spec: SweepSpec = serde_json::from_str(&text(path)?)
@@ -179,6 +209,20 @@ mod tests {
         assert_eq!(run_args(&["compare", &s, "cheap", "nobody"]).0, 2);
         assert_eq!(run_args(&["front", "missing.json"]).0, 2);
         assert_eq!(run_args(&[]).0, 2);
+    }
+
+    #[test]
+    fn front_and_compare_run_the_check_and_exit_1_with_findings_but_still_answer() {
+        let dir = tempfile::tempdir().unwrap();
+        let dup = file(&dir, "d.json", &STUDY.replace("\"bad\"", "\"cheap\""));
+        let (code, out, err) = run_args(&["front", &dup]);
+        assert_eq!(code, 1);
+        assert!(out.contains("\"name\""), "{out}");
+        assert!(err.contains("PHOENIX-DEXP-001"), "{err}");
+        let s = file(&dir, "s.json", STUDY);
+        let (code, out, _) = run_args(&["compare", &s, "cheap", "cheap"]);
+        assert_eq!(code, 0);
+        assert!(out.contains("# equal"), "{out}");
     }
 
     #[test]
