@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **The threat model says what the code already does:** the rows of `docs/THREAT_MODEL.md` that have a mitigation in the code and a test for it are marked `partial` and name the tests and what is still not covered; the rows without either stay `planned`.
+
 - **`front` and `compare` run the check first:** with findings (repeated names, missing figures, figures without a source) they still print their answer but list the findings on the error output and exit with 1, and `compare` of two alternatives with the same parameters and figures says `# equal`. A test covers both.
 - **An alternative with a metric that is not finite is incomplete:** it is flagged incomplete and takes no place on the front; before, a diverged value (not a number) left it marked as not dominated.
 - **Simulation mode:** add `src/simulation.rs`, a host twin of the tools that compute the figures: a seeded solver (the same seed gives the same study), three injectable failures (crash, figure without a source, figure that is not finite) and a recovery that runs the failed alternatives again. Eight deterministic tests cover them. The manifest now says `evidence: simulator`; nothing has run against the real tools.
