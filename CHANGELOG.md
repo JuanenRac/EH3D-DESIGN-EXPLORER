@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.0.4] - Figure and name checks and stricter limits
+
 - **The threat model says what the code already does:** the rows of `docs/THREAT_MODEL.md` that have a mitigation in the code and a test for it are marked `partial` and name the tests and what is still not covered; the rows without either stay `planned`.
 
 - **`front` and `compare` run the check first:** with findings (repeated names, missing figures, figures without a source) they still print their answer but list the findings on the error output and exit with 1, and `compare` of two alternatives with the same parameters and figures says `# equal`. A test covers both.
