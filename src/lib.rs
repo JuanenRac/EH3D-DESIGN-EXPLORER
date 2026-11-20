@@ -31,6 +31,10 @@ pub enum Code {
     NoSource,
     /// A number is not finite.
     NotFinite,
+    /// An alternative has a figure for a criterion that the study does not declare (a typo in its name would otherwise leave the figure out of every comparison).
+    UnknownCriterion,
+    /// The name of an alternative is empty or only blanks.
+    EmptyName,
 }
 
 impl Code {
@@ -41,6 +45,8 @@ impl Code {
             Code::MissingMetric => "PHOENIX-DEXP-002",
             Code::NoSource => "PHOENIX-DEXP-003",
             Code::NotFinite => "PHOENIX-DEXP-004",
+            Code::UnknownCriterion => "PHOENIX-DEXP-005",
+            Code::EmptyName => "PHOENIX-DEXP-006",
         }
     }
 }

@@ -19,7 +19,7 @@
 
 ---
 
-**Comprobación de honestidad - lo que se ejecuta hoy:** una biblioteca de Rust y una línea de comandos que leen un conjunto de alternativas (parámetros y cifras que nombran cada una la herramienta y la versión que las produjo) y los criterios con su dirección, comprueban el conjunto (nombres repetidos, cifras que faltan, cifras sin fuente), muestran el lugar de cada alternativa (no dominada, o dominada y por quién, sin nombrar una única mejor), listan lo que difiere entre dos alternativas y generan la rejilla de un barrido paramétrico en un orden fijo. Todo se ha ejecutado solo con datos hechos por sus propias pruebas. Lo que no existe: el cálculo de las cifras (vienen de otras herramientas), la comparación de ramas de un historial de diseño y cualquier búsqueda más allá de la rejilla simple.
+**Comprobación de honestidad - lo que se ejecuta hoy:** una biblioteca de Rust y una línea de comandos que leen un conjunto de alternativas (parámetros y cifras que nombran cada una la herramienta y la versión que las produjo) y los criterios con su dirección, comprueban el conjunto (nombres repetidos, cifras que faltan, cifras sin fuente, cifras de un criterio que el estudio no declara, nombres vacíos), muestran el lugar de cada alternativa (no dominada, o dominada y por quién, sin nombrar una única mejor), listan lo que difiere entre dos alternativas y generan la rejilla de un barrido paramétrico en un orden fijo. Todo se ha ejecutado solo con datos hechos por sus propias pruebas. Lo que no existe: el cálculo de las cifras (vienen de otras herramientas), la comparación de ramas de un historial de diseño y cualquier búsqueda más allá de la rejilla simple.
 
 ---
 
@@ -46,7 +46,7 @@ Cada línea es una parte de este repositorio y la luz dice hasta dónde llega ho
 | Área | Estado | Qué significa aquí |
 |---|---|---|
 | Comprobaciones del repositorio | 🟡 | La comprobación del repositorio, la de las imágenes y las 3 pruebas de la base se ejecutan en el CI y pasan. |
-| Pruebas | 🟡 | Las 27 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. Incluyen una simulación con semilla fija de las herramientas que calculan las cifras, con fallos inyectados y recuperación. |
+| Pruebas | 🟡 | Las 33 pruebas del código Rust y las 3 de la base pasan en un ordenador. Usan solo datos hechos por las propias pruebas. Incluyen una simulación con semilla fija de las herramientas que calculan las cifras, con fallos inyectados y recuperación. |
 | Hardware real | 🟠 | No se ha ejecutado en ninguna máquina ni placa: nada de aquí se ha probado en hardware. |
 | Función planificada | 🟠 | Escrito: las alternativas con parámetros y cifras con fuente, el conjunto no dominado con quién supera a cada una de las demás, la diferencia entre dos alternativas y la rejilla determinista. Sin escribir: la comparación de ramas del historial de diseño y cualquier búsqueda más lista. |
 | Requisitos | 🟠 | 4 de los 5 requisitos están en prototipo; la comparación de ramas del historial solo está planificada. Ninguno está validado. |

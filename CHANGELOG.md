@@ -9,6 +9,9 @@ All notable changes to this project are documented here.
 - **`front` and `compare` run the check first:** with findings (repeated names, missing figures, figures without a source) they still print their answer but list the findings on the error output and exit with 1, and `compare` of two alternatives with the same parameters and figures says `# equal`. A test covers both.
 - **An alternative with a metric that is not finite is incomplete:** it is flagged incomplete and takes no place on the front; before, a diverged value (not a number) left it marked as not dominated.
 - **Simulation mode:** add `src/simulation.rs`, a host twin of the tools that compute the figures: a seeded solver (the same seed gives the same study), three injectable failures (crash, figure without a source, figure that is not finite) and a recovery that runs the failed alternatives again. Eight deterministic tests cover them. The manifest now says `evidence: simulator`; nothing has run against the real tools.
+- **The check names a figure for a criterion the study does not declare:** `PHOENIX-DEXP-005` is reported when an alternative has a figure whose criterion is not in the study (a typo in the name used to leave the figure out of every comparison without a word).
+- **The check names an alternative with an empty name:** `PHOENIX-DEXP-006` is reported for a name that is empty or only blanks, and a test keeps the codes different and in the order of their numbers.
+- **A limit of zero bytes in the settings is refused:** `max_file_bytes = 0` is a bad value of its line, as `max_candidates = 0` already was, instead of refusing every input file.
 
 ## [0.0.3] - Split CI with a build cache and a pinned Rust toolchain
 

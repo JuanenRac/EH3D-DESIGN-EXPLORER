@@ -122,6 +122,24 @@ impl Study {
         let mut out = Vec::new();
         let mut seen = BTreeSet::new();
         for c in &self.candidates {
+            if c.name.trim().is_empty() {
+                out.push(Finding {
+                    code: Code::EmptyName,
+                    subject: c.name.clone(),
+                    message: "the name of the alternative is empty".into(),
+                });
+            }
+            for criterion in c.metrics.keys() {
+                if !self.criteria.contains_key(criterion) {
+                    out.push(Finding {
+                        code: Code::UnknownCriterion,
+                        subject: c.name.clone(),
+                        message: format!(
+                            "a figure for `{criterion}`, which the study does not declare as a criterion"
+                        ),
+                    });
+                }
+            }
             if !seen.insert(c.name.as_str()) {
                 out.push(Finding {
                     code: Code::DuplicateName,
@@ -307,6 +325,44 @@ mod tests {
                 ("temp_c".to_string(), Goal::Min),
             ]),
             candidates: cands,
+        }
+    }
+
+    #[test]
+    fn a_figure_for_a_criterion_the_study_does_not_declare_is_a_finding() {
+        let mut c = cand("typo", 1.0, 50.0);
+        c.metrics.insert("cost_eru".to_string(), m(2.0));
+        let findings = study(vec![c, cand("fine", 2.0, 40.0)]).check();
+        assert_eq!(findings.len(), 1, "{findings:?}");
+        assert_eq!(findings[0].code, Code::UnknownCriterion);
+        assert_eq!(findings[0].subject, "typo");
+        assert!(findings[0].message.contains("cost_eru"));
+        assert_eq!(findings[0].code.as_str(), "PHOENIX-DEXP-005");
+    }
+
+    #[test]
+    fn a_name_that_is_empty_or_only_blanks_is_a_finding() {
+        for name in ["", "   ", "\t"] {
+            let findings = study(vec![cand(name, 1.0, 50.0)]).check();
+            assert_eq!(findings.len(), 1, "{name:?}: {findings:?}");
+            assert_eq!(findings[0].code, Code::EmptyName);
+            assert_eq!(findings[0].code.as_str(), "PHOENIX-DEXP-006");
+        }
+        assert!(study(vec![cand("a", 1.0, 50.0)]).check().is_empty());
+    }
+
+    #[test]
+    fn the_codes_are_all_different_and_follow_the_numbers() {
+        let all = [
+            Code::DuplicateName,
+            Code::MissingMetric,
+            Code::NoSource,
+            Code::NotFinite,
+            Code::UnknownCriterion,
+            Code::EmptyName,
+        ];
+        for (i, code) in all.iter().enumerate() {
+            assert_eq!(code.as_str(), format!("PHOENIX-DEXP-{:03}", i + 1));
         }
     }
 

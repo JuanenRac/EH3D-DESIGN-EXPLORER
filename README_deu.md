@@ -19,7 +19,7 @@
 
 ---
 
-**Ehrlichkeitscheck - was heute tatsächlich läuft:** eine Rust-Bibliothek und eine Befehlszeile, die eine Menge von Alternativen (Parameter und Zahlen, die jeweils Werkzeug und Version ihrer Herkunft nennen) und die Kriterien mit ihrer Richtung lesen, die Menge prüfen (doppelte Namen, fehlende Zahlen, Zahlen ohne Quelle), den Platz jeder Alternative zeigen (nicht dominiert, oder dominiert und von wem, ohne eine einzige beste zu nennen), den Unterschied zwischen zwei Alternativen auflisten und das Raster eines Parameterdurchlaufs in fester Reihenfolge erzeugen. Alles lief nur mit Daten der eigenen Tests. Es fehlen: die Berechnung der Zahlen (sie kommen von anderen Werkzeugen), der Vergleich von Zweigen einer Entwurfshistorie und jede Suche jenseits des einfachen Rasters.
+**Ehrlichkeitscheck - was heute tatsächlich läuft:** eine Rust-Bibliothek und eine Befehlszeile, die eine Menge von Alternativen (Parameter und Zahlen, die jeweils Werkzeug und Version ihrer Herkunft nennen) und die Kriterien mit ihrer Richtung lesen, die Menge prüfen (doppelte Namen, fehlende Zahlen, Zahlen ohne Quelle, Zahlen für ein nicht deklariertes Kriterium, leere Namen), den Platz jeder Alternative zeigen (nicht dominiert, oder dominiert und von wem, ohne eine einzige beste zu nennen), den Unterschied zwischen zwei Alternativen auflisten und das Raster eines Parameterdurchlaufs in fester Reihenfolge erzeugen. Alles lief nur mit Daten der eigenen Tests. Es fehlen: die Berechnung der Zahlen (sie kommen von anderen Werkzeugen), der Vergleich von Zweigen einer Entwurfshistorie und jede Suche jenseits des einfachen Rasters.
 
 ---
 
@@ -46,7 +46,7 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Repository-Prüfungen | 🟡 | Die Repository-Prüfung, die Prüfung der Bilder und die 3 Tests der Basis laufen in der CI und bestehen. |
-| Tests | 🟡 | Die 27 Tests des Rust-Codes und die 3 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten der Tests selbst. Dazu gehört eine Simulation mit festem Seed für die Werkzeuge, die die Kennzahlen berechnen, mit eingespeisten Fehlern und Wiederherstellung. |
+| Tests | 🟡 | Die 33 Tests des Rust-Codes und die 3 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten der Tests selbst. Dazu gehört eine Simulation mit festem Seed für die Werkzeuge, die die Kennzahlen berechnen, mit eingespeisten Fehlern und Wiederherstellung. |
 | Echte Hardware | 🟠 | Auf keiner Maschine und keiner Platine ausgeführt: nichts hier wurde auf Hardware ausprobiert. |
 | Geplante Funktion | 🟠 | Geschrieben: die Alternativen mit Parametern und Zahlen mit Quelle, die nicht dominierte Menge mit der Angabe, wer jede andere schlägt, der Unterschied zwischen zwei Alternativen und das deterministische Raster. Nicht geschrieben: der Vergleich von Zweigen der Entwurfshistorie und jede klügere Suche. |
 | Anforderungen | 🟠 | 4 der 5 Anforderungen sind im Prototyp; der Vergleich von Zweigen der Historie ist nur geplant. Keine ist validiert. |

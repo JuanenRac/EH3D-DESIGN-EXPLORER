@@ -46,7 +46,13 @@ impl Config {
                 key: key.to_string(),
             };
             match key {
-                "max_file_bytes" => config.max_file_bytes = value.parse().map_err(|_| bad())?,
+                "max_file_bytes" => {
+                    let n: u64 = value.parse().map_err(|_| bad())?;
+                    if n == 0 {
+                        return Err(bad());
+                    }
+                    config.max_file_bytes = n;
+                }
                 "max_candidates" | "max_criteria" => {
                     let n: usize = value.parse().map_err(|_| bad())?;
                     if n == 0 {
@@ -82,6 +88,29 @@ mod tests {
     use super::*;
 
     #[test]
+    fn a_limit_of_bytes_above_zero_is_kept_and_a_negative_or_fractional_one_is_refused() {
+        assert_eq!(
+            Config::parse("max_file_bytes = 1\n")
+                .unwrap()
+                .max_file_bytes,
+            1
+        );
+        for bad in [
+            "max_file_bytes = -1\n",
+            "max_file_bytes = 1.5\n",
+            "max_file_bytes =\n",
+        ] {
+            assert!(
+                matches!(
+                    Config::parse(bad),
+                    Err(DexpError::ConfigBadValue { line: 1, .. })
+                ),
+                "{bad:?}"
+            );
+        }
+    }
+
+    #[test]
     fn defaults_are_exact() {
         assert_eq!(Config::parse("").unwrap().equal_within, 0.0);
     }
@@ -100,6 +129,7 @@ mod tests {
         ));
         for bad in [
             "max_candidates = 0\n",
+            "max_file_bytes = 0\n",
             "equal_within = 0.9\n",
             "equal_within = nan\n",
             "max_criteria = x\n",
