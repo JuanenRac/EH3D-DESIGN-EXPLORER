@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Stack-Markdown%20%2B%20Python-blue.svg" alt="Markdown and Python">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Tests-3-2EA043.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-68-2EA043.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Version-0.0.4-0f6cbd.svg" alt="Version">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
@@ -31,7 +31,7 @@
 |---|---|
 | Version | `0.0.4` |
 | Maturity | Scaffolding |
-| Tests | 3 |
+| Tests | 68 |
 | Stack | Markdown, Python 3.10+ |
 | On real hardware | Not run on hardware yet |
 
@@ -45,8 +45,8 @@ Each line is one part of this repository and the light says how far it is today.
 
 | Area | State | What it means here |
 |---|---|---|
-| Repository checks | 🟡 | The repository check, the check of the pictures and the 3 tests of the base run in CI and pass. |
-| Tests | 🟡 | 42 tests of the Rust code and the 3 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the tools that compute the figures with injected faults and recovery. |
+| Repository checks | 🟡 | The repository check, the check of the pictures and the 68 tests of the base run in CI and pass. |
+| Tests | 🟡 | 57 tests of the Rust code and the 68 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the tools that compute the figures with injected faults and recovery. |
 | Real hardware | 🟠 | Not run on any machine or board: nothing here has been tried on hardware. |
 | Planned function | 🟠 | Written: the alternatives with parameters and sourced figures, the non-dominated set with who beats each of the others, the difference between two alternatives and the deterministic grid. Not written: the comparison of branches of the design history and any smarter search. |
 | Requirements | 🟠 | 4 of the 5 requirements are at prototype; the comparison of branches of the history is only planned. None is validated. |
@@ -80,7 +80,7 @@ python -I -m unittest discover -s tools -p "test_*.py"
 
 ## 🧪 Testing
 
-The base has 3 tests (`python -I -m unittest discover -s tools -p "test_*.py"`), and they pass. The CI runs the repository check, the check of the pictures and those tests.
+The base has 68 tests (`python -I -m unittest discover -s tools -p "test_*.py"`), and they pass. The CI runs the repository check, the check of the pictures and those tests.
 
 ## 🏗️ Build & Release
 

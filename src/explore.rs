@@ -485,4 +485,202 @@ mod tests {
         ));
         assert!(Study::from_json(&ok.replace("min", "smallest"), &cfg).is_err());
     }
+
+    fn lcg(seed: &mut u64) -> f64 {
+        *seed = (*seed * 1_103_515_245 + 12_345) % 2_147_483_648;
+        ((*seed >> 8) % 1000) as f64
+    }
+
+    fn seeded(count: usize, seed: u64) -> Study {
+        let mut state = seed;
+        let cands = (0..count)
+            .map(|n| {
+                let (a, b) = (lcg(&mut state), lcg(&mut state));
+                cand(&format!("c{n:03}"), a, b)
+            })
+            .collect();
+        study(cands)
+    }
+
+    #[test]
+    fn in_a_seeded_set_somebody_is_always_on_the_front_and_nobody_beats_the_one_who_beats_them() {
+        for seed in [1_u64, 2, 3, 4, 5] {
+            let p = seeded(40, seed).placements(&Config::default());
+            assert!(p.iter().any(|x| x.non_dominated), "seed {seed}");
+            for x in &p {
+                assert_eq!(x.non_dominated, x.dominated_by.is_empty());
+                assert!(!x.dominated_by.contains(&x.name));
+                for beater in &x.dominated_by {
+                    let other = p.iter().find(|o| &o.name == beater).unwrap();
+                    assert!(!other.dominated_by.contains(&x.name), "{seed}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn the_order_in_which_the_alternatives_are_written_does_not_change_the_placements() {
+        let forward = seeded(30, 9);
+        let mut backward = forward.clone();
+        backward.candidates.reverse();
+        assert_eq!(
+            forward.placements(&Config::default()),
+            backward.placements(&Config::default())
+        );
+    }
+
+    #[test]
+    fn the_placements_come_sorted_by_the_name_of_the_alternative() {
+        let p = seeded(25, 11).placements(&Config::default());
+        let names: Vec<&String> = p.iter().map(|x| &x.name).collect();
+        let mut sorted = names.clone();
+        sorted.sort();
+        assert_eq!(names, sorted);
+    }
+
+    #[test]
+    fn six_hundred_alternatives_are_placed_without_a_panic() {
+        let s = seeded(600, 21);
+        let p = s.placements(&Config::default());
+        assert_eq!(p.len(), 600);
+        assert!(p.iter().filter(|x| x.non_dominated).count() >= 1);
+    }
+
+    #[test]
+    fn a_single_alternative_is_on_the_front_and_a_study_without_alternatives_places_nobody() {
+        let one = study(vec![cand("only", 1.0, 1.0)]).placements(&Config::default());
+        assert_eq!(one.len(), 1);
+        assert!(one[0].non_dominated && !one[0].incomplete);
+        let none = study(vec![]);
+        assert!(none.placements(&Config::default()).is_empty());
+        assert!(none.check().is_empty());
+    }
+
+    #[test]
+    fn an_alternative_that_lacks_a_figure_neither_beats_nor_is_beaten() {
+        let mut lacking = cand("lacking", 0.1, 1.0);
+        lacking.metrics.remove("temp_c");
+        let s = study(vec![lacking, cand("full", 5.0, 80.0)]);
+        let p = s.placements(&Config::default());
+        let lacking = p.iter().find(|x| x.name == "lacking").unwrap();
+        let full = p.iter().find(|x| x.name == "full").unwrap();
+        assert!(lacking.incomplete && !lacking.non_dominated);
+        assert!(full.non_dominated && full.dominated_by.is_empty());
+    }
+
+    #[test]
+    fn a_difference_between_an_alternative_and_itself_is_empty() {
+        let s = study(vec![cand("a", 1.0, 50.0)]);
+        assert!(s.difference("a", "a").unwrap().is_empty());
+    }
+
+    #[test]
+    fn a_difference_with_a_name_that_does_not_exist_is_an_error_whichever_side_it_is_on() {
+        let s = study(vec![cand("a", 1.0, 50.0)]);
+        assert!(matches!(
+            s.difference("a", "x"),
+            Err(DexpError::BadInput(_))
+        ));
+        assert!(matches!(
+            s.difference("x", "a"),
+            Err(DexpError::BadInput(_))
+        ));
+    }
+
+    #[test]
+    fn the_difference_says_which_one_is_better_by_the_direction_of_the_criterion() {
+        let mut s = study(vec![cand("a", 1.0, 50.0), cand("b", 2.0, 60.0)]);
+        s.criteria.insert("temp_c".into(), Goal::Max);
+        let changes = s.difference("a", "b").unwrap();
+        let better = |name: &str| {
+            changes
+                .iter()
+                .find(|c| c.name == name && c.kind == "metric")
+                .unwrap()
+                .better
+        };
+        assert_eq!(better("cost_eur"), "first");
+        assert_eq!(better("temp_c"), "second");
+    }
+
+    #[test]
+    fn a_parameter_that_only_one_alternative_has_is_a_difference_with_a_missing_side() {
+        let mut b = cand("b", 1.0, 50.0);
+        b.parameters.insert("height_mm".into(), 3.0);
+        let s = study(vec![cand("a", 1.0, 50.0), b]);
+        let changes = s.difference("a", "b").unwrap();
+        assert_eq!(changes.len(), 1);
+        assert_eq!(changes[0].kind, "parameter");
+        assert_eq!((changes[0].from, changes[0].to), (None, Some(3.0)));
+    }
+
+    #[test]
+    fn the_parameters_come_before_the_metrics_in_a_difference() {
+        let s = study(vec![cand("a", 1.0, 50.0), cand("b", 2.0, 60.0)]);
+        let kinds: Vec<&str> = s
+            .difference("a", "b")
+            .unwrap()
+            .iter()
+            .map(|c| c.kind)
+            .collect();
+        assert_eq!(kinds, ["parameter", "metric", "metric"]);
+    }
+
+    #[test]
+    fn a_text_that_is_not_a_study_is_an_error_and_never_a_panic() {
+        let config = Config::default();
+        for text in ["", " ", "null", "[]", "12", "{", "{}", "\u{feff}{}"] {
+            assert!(
+                matches!(Study::from_json(text, &config), Err(DexpError::BadJson(_))),
+                "{text:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_study_without_criteria_is_refused_and_the_most_alternatives_is_read_and_one_more_is_not() {
+        let config = Config {
+            max_candidates: 2,
+            ..Config::default()
+        };
+        let empty = r#"{"criteria":{},"candidates":[]}"#;
+        assert!(matches!(
+            Study::from_json(empty, &config),
+            Err(DexpError::BadInput(_))
+        ));
+        let two =
+            serde_json::to_string(&study(vec![cand("a", 1.0, 1.0), cand("b", 2.0, 2.0)])).unwrap();
+        assert!(Study::from_json(&two, &config).is_ok());
+        let three = serde_json::to_string(&study(vec![
+            cand("a", 1.0, 1.0),
+            cand("b", 2.0, 2.0),
+            cand("c", 3.0, 3.0),
+        ]))
+        .unwrap();
+        assert!(matches!(
+            Study::from_json(&three, &config),
+            Err(DexpError::TooLarge { .. })
+        ));
+    }
+
+    #[test]
+    fn a_goal_is_written_in_lower_case_and_a_goal_that_is_not_one_is_refused() {
+        assert_eq!(serde_json::to_string(&Goal::Min).unwrap(), "\"min\"");
+        assert_eq!(serde_json::to_string(&Goal::Max).unwrap(), "\"max\"");
+        let text = r#"{"criteria":{"cost_eur":"smallest"},"candidates":[]}"#;
+        assert!(matches!(
+            Study::from_json(text, &Config::default()),
+            Err(DexpError::BadJson(_))
+        ));
+    }
+
+    #[test]
+    fn a_parameter_that_is_not_finite_is_one_finding_and_names_the_parameter() {
+        let mut c = cand("a", 1.0, 50.0);
+        c.parameters.insert("height_mm".into(), f64::INFINITY);
+        let findings = study(vec![c]).check();
+        assert_eq!(findings.len(), 1);
+        assert_eq!(findings[0].code, Code::NotFinite);
+        assert!(findings[0].message.contains("height_mm"));
+    }
 }

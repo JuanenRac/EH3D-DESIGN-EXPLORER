@@ -21,7 +21,7 @@ The official state of each capability is in `REQUIREMENTS.md`. The register has 
 
 ## Known technical debt and omitted tests
 
-* 42 tests of the Rust code (nine of them keep this register true) and the 3 of the base; the Rust tests build their own studies and never touch real data.
+* 57 tests of the Rust code (nine of them keep this register true) and the 68 of the base (65 of them test the shared tools of the base); the Rust tests build their own studies and never touch real data.
 * Eight of the tests run the simulation (`src/simulation.rs`): the three failures that can be injected (a crash, a figure without its source, a figure that is not finite), the comparison that leaves a failed alternative out and the recovery.
 * Not tested: very large studies.
 * `cargo deny` is not run yet.

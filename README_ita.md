@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/License-GPL%203.0--or--later-blue.svg" alt="GPL 3.0 or later">
   <img src="https://img.shields.io/badge/Stack-Markdown%20%2B%20Python-blue.svg" alt="Markdown and Python">
   <img src="https://img.shields.io/badge/Languages-8-00E5FF.svg" alt="Languages">
-  <img src="https://img.shields.io/badge/Tests-3-2EA043.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-68-2EA043.svg" alt="Tests">
   <img src="https://img.shields.io/badge/Version-0.0.4-0f6cbd.svg" alt="Version">
   <img src="https://img.shields.io/badge/Maturity-scaffolding-FFB020.svg" alt="Maturity">
 </p>
@@ -31,7 +31,7 @@
 |---|---|
 | Versione | `0.0.4` |
 | Maturità | Impalcatura |
-| Test | 3 |
+| Test | 68 |
 | Stack tecnologico | Markdown, Python 3.10+ |
 | Su hardware reale | Non ancora eseguito su hardware |
 
@@ -45,8 +45,8 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 
 | Area | Stato | Cosa significa qui |
 |---|---|---|
-| Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 3 test della base girano nella CI e passano. |
-| Test | 🟡 | I 42 test del codice Rust e i 3 della base passano su un computer. Usano solo dati prodotti dai test stessi. Includono una simulazione a seme fisso di gli strumenti che calcolano le cifre, con guasti iniettati e ripristino. |
+| Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 68 test della base girano nella CI e passano. |
+| Test | 🟡 | I 57 test del codice Rust e i 68 della base passano su un computer. Usano solo dati prodotti dai test stessi. Includono una simulazione a seme fisso di gli strumenti che calcolano le cifre, con guasti iniettati e ripristino. |
 | Hardware reale | 🟠 | Non eseguito su nessuna macchina né scheda: nulla qui è stato provato su hardware. |
 | Funzione pianificata | 🟠 | Scritto: le alternative con parametri e cifre con fonte, l'insieme non dominato con chi batte ciascuna delle altre, la differenza tra due alternative e la griglia deterministica. Non scritto: il confronto dei rami della cronologia di progetto e qualsiasi ricerca più intelligente. |
 | Requisiti | 🟠 | 4 dei 5 requisiti sono a livello di prototipo; il confronto dei rami della cronologia è solo pianificato. Nessuno è validato. |
@@ -80,7 +80,7 @@ python -I -m unittest discover -s tools -p "test_*.py"
 
 ## 🧪 Test
 
-La base ha 3 test (`python -I -m unittest discover -s tools -p "test_*.py"`), e passano. La CI esegue il controllo del repository, quello delle immagini e questi test.
+La base ha 68 test (`python -I -m unittest discover -s tools -p "test_*.py"`), e passano. La CI esegue il controllo del repository, quello delle immagini e questi test.
 
 ## 🏗️ Compilazione e rilascio
 
