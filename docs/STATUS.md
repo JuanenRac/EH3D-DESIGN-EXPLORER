@@ -2,21 +2,26 @@
 
 ## Current state
 
-EH3D-DESIGN-EXPLORER is early code. Version 0.0.1 holds the base that every repository of the suite carries (manifest, README files in eight languages, changelog, CI, shared checks) and the written scope, requirements, dependencies, threat model and decisions. It also has a Rust library and a command line that read a set of alternatives of a design (parameters and figures that each name the tool and version that produced them) with its criteria, check it, show the place of every alternative without naming a single best one, list what differs between two alternatives and generate the grid of a parametric sweep in a fixed order. They have run only on data made by their own tests. Nothing has been run on a machine with real data, and no requirement is validated.
+EH3D-DESIGN-EXPLORER is early code on a computer: a Rust library and a command line (`check`, `front`, `compare`, `sweep`) that read a set of alternatives of a design with its criteria, check it, show the place of every alternative without naming a single best one, list what differs between two alternatives and generate the grid of a parametric sweep in a fixed order. A seeded twin of the tools that compute the figures injects three failures. All of it has run only on data made by its own tests; the comparison of branches is not written and no requirement is validated.
 
 ## Capabilities
 
-The official state of each capability is in REQUIREMENTS.md: 5 requirements: 4 `prototype` and 1 `planned` (DEXP-005). This page never states a state that REQUIREMENTS.md does not.
+The official state of each capability is in `REQUIREMENTS.md`. The register has 31 requirements: 25 implemented, 4 prototype, 2 planned and 0 validated. By progress: 25 done, 4 partial, 1 pending and 1 blocked. This page never states a state that `REQUIREMENTS.md` does not.
 
 ## Open questions
 
-* Which criteria the first version offers and how they are weighted by the user.
+* Which criteria the first version offers and how the user weighs them.
+* How a branch of the design history becomes a study.
 
-## Needs from other repositories
+## What it needs from other repositories
 
-* EH3D-PHOENIX-PCB: the design model
-* EH3D-DESIGN-VERIFIER: checks to use as criteria
+* EH3D-PHOENIX-PCB: the design model.
+* EH3D-DESIGN-VERIFIER: the checks to use as criteria.
+* EH3D-DESIGN-HISTORY: the branches to compare.
 
 ## Known technical debt and omitted tests
 
-33 tests of the Rust code and the 3 of the base; the Rust tests build their own studies and never touch real data. Eight of them run the simulation (`src/simulation.rs`): a seeded twin of the tools that compute the figures, the three failures that can be injected (a crash, a figure without its source, a figure that is not finite), the comparison that leaves a failed alternative out, and the recovery that runs the failed alternatives again. What is pending is the proof against the real tools. Not tested: very large studies. `cargo deny` is not run yet.
+* 42 tests of the Rust code (nine of them keep this register true) and the 3 of the base; the Rust tests build their own studies and never touch real data.
+* Eight of the tests run the simulation (`src/simulation.rs`): the three failures that can be injected (a crash, a figure without its source, a figure that is not finite), the comparison that leaves a failed alternative out and the recovery.
+* Not tested: very large studies.
+* `cargo deny` is not run yet.
