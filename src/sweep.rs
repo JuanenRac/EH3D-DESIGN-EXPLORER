@@ -4,6 +4,7 @@
 
 use crate::config::Config;
 use crate::error::DexpError;
+use crate::explore::unique_map;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -31,6 +32,7 @@ pub struct SweepSpec {
     /// The prefix of the names of the alternatives (`<prefix>0001`, ...).
     pub prefix: String,
     /// The parameters, with the unit in the name.
+    #[serde(deserialize_with = "unique_map")]
     pub parameters: BTreeMap<String, Values>,
 }
 
@@ -41,6 +43,16 @@ pub struct Generated {
     pub name: String,
     /// The parameters.
     pub parameters: BTreeMap<String, f64>,
+}
+
+impl SweepSpec {
+    /// Read a specification from JSON: an object, with no field the format does not know and no parameter written twice.
+    pub fn from_json(text: &str) -> Result<SweepSpec, DexpError> {
+        if !text.trim_start().starts_with('{') {
+            return Err(DexpError::BadJson("a JSON object was expected".into()));
+        }
+        serde_json::from_str(text).map_err(|e| DexpError::BadJson(e.to_string()))
+    }
 }
 
 impl Values {
@@ -206,5 +218,73 @@ mod tests {
             expand(&huge, &Config::default()),
             Err(DexpError::TooLarge { .. })
         ));
+    }
+
+    #[test]
+    fn a_parameter_written_twice_and_an_array_are_not_a_specification() {
+        for text in [
+            r#"{"prefix":"x","parameters":{"a_mm":[1,2,3],"a_mm":[9]}}"#,
+            r#"["x",{"a_mm":[1]}]"#,
+            r#"{"prefix":"x","parameters":{"a_mm":{"start":0,"stop":1,"step":1,"count":5}}}"#,
+        ] {
+            assert!(
+                matches!(SweepSpec::from_json(text), Err(DexpError::BadJson(_))),
+                "{text}"
+            );
+        }
+        assert!(SweepSpec::from_json(r#"{"prefix":"x","parameters":{"a_mm":[1]}}"#).is_ok());
+    }
+
+    #[test]
+    fn a_range_whose_start_is_its_stop_is_one_value() {
+        let s = spec(r#"{"prefix":"x","parameters":{"a_mm":{"start":2.5,"stop":2.5,"step":1}}}"#);
+        let g = expand(&s, &Config::default()).unwrap();
+        assert_eq!(g.len(), 1);
+        assert_eq!(g[0].parameters["a_mm"], 2.5);
+    }
+
+    #[test]
+    fn exactly_the_most_alternatives_are_made_and_the_names_stay_in_order() {
+        let s = spec(
+            r#"{"prefix":"p","parameters":{"a":{"start":1,"stop":100,"step":1},"b":{"start":1,"stop":100,"step":1}}}"#,
+        );
+        let g = expand(&s, &Config::default()).unwrap();
+        assert_eq!(g.len(), 10_000);
+        assert_eq!(g[0].name, "p00001");
+        assert_eq!(g[9_999].name, "p10000");
+        assert!(g.windows(2).all(|w| w[0].name < w[1].name));
+    }
+
+    #[test]
+    fn seeded_grids_have_every_combination_exactly_once() {
+        let mut state = 5u64;
+        let mut next = || {
+            state = state
+                .wrapping_mul(6_364_136_223_846_793_005)
+                .wrapping_add(1_442_695_040_888_963_407);
+            1 + (state >> 33) as usize % 5
+        };
+        for round in 0..40 {
+            let sizes = [next(), next(), next()];
+            let parameters = ["a", "b", "c"]
+                .iter()
+                .zip(sizes)
+                .map(|(name, n)| {
+                    (
+                        (*name).to_string(),
+                        Values::List((0..n).map(|v| v as f64).collect()),
+                    )
+                })
+                .collect();
+            let spec = SweepSpec {
+                prefix: "g".into(),
+                parameters,
+            };
+            let grid = expand(&spec, &Config::default()).unwrap();
+            assert_eq!(grid.len(), sizes.iter().product::<usize>(), "round {round}");
+            let distinct: std::collections::BTreeSet<String> =
+                grid.iter().map(|g| format!("{:?}", g.parameters)).collect();
+            assert_eq!(distinct.len(), grid.len(), "round {round}");
+        }
     }
 }

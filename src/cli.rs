@@ -118,8 +118,7 @@ fn dispatch(
             Ok(report_findings(&study, err))
         }
         ["sweep", path] => {
-            let spec: SweepSpec = serde_json::from_str(&text(path)?)
-                .map_err(|e| Some(DexpError::BadJson(e.to_string())))?;
+            let spec = SweepSpec::from_json(&text(path)?).map_err(Some)?;
             let grid = expand(&spec, &config).map_err(Some)?;
             let _ = writeln!(out, "{}", pretty(&grid));
             Ok(0)

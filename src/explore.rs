@@ -35,10 +35,10 @@ pub struct Candidate {
     /// Its name, unique in the set.
     pub name: String,
     /// The parameters it is made from, with the unit in the name.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "unique_map")]
     pub parameters: BTreeMap<String, f64>,
     /// Its figures by criterion.
-    #[serde(default)]
+    #[serde(default, deserialize_with = "unique_map")]
     pub metrics: BTreeMap<String, Metric>,
 }
 
@@ -47,9 +47,43 @@ pub struct Candidate {
 #[serde(deny_unknown_fields)]
 pub struct Study {
     /// The criteria and their direction.
+    #[serde(deserialize_with = "unique_map")]
     pub criteria: BTreeMap<String, Goal>,
     /// The alternatives.
     pub candidates: Vec<Candidate>,
+}
+
+/// A JSON object read as a map that refuses a key written twice: without this the last one would silently take the place of the others.
+pub(crate) fn unique_map<'de, D, V>(deserializer: D) -> Result<BTreeMap<String, V>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    V: Deserialize<'de>,
+{
+    struct Unique<V>(std::marker::PhantomData<V>);
+    impl<'de, V: Deserialize<'de>> serde::de::Visitor<'de> for Unique<V> {
+        type Value = BTreeMap<String, V>;
+
+        fn expecting(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            f.write_str("an object")
+        }
+
+        fn visit_map<A: serde::de::MapAccess<'de>>(
+            self,
+            mut map: A,
+        ) -> Result<Self::Value, A::Error> {
+            let mut out = BTreeMap::new();
+            while let Some((key, value)) = map.next_entry::<String, V>()? {
+                if out.contains_key(&key) {
+                    return Err(serde::de::Error::custom(format!(
+                        "the key `{key}` is written twice"
+                    )));
+                }
+                out.insert(key, value);
+            }
+            Ok(out)
+        }
+    }
+    deserializer.deserialize_map(Unique(std::marker::PhantomData))
 }
 
 /// Something wrong in a study.
@@ -94,6 +128,10 @@ pub struct Change {
 impl Study {
     /// Read a study from JSON (unknown fields are refused) and apply the size limits.
     pub fn from_json(text: &str, config: &Config) -> Result<Study, DexpError> {
+        // a JSON array would be read as a list of the fields in order, so only an object is a study
+        if !text.trim_start().starts_with('{') {
+            return Err(DexpError::BadJson("a JSON object was expected".into()));
+        }
         let study: Study =
             serde_json::from_str(text).map_err(|e| DexpError::BadJson(e.to_string()))?;
         if study.candidates.len() > config.max_candidates {
@@ -682,5 +720,78 @@ mod tests {
         assert_eq!(findings.len(), 1);
         assert_eq!(findings[0].code, Code::NotFinite);
         assert!(findings[0].message.contains("height_mm"));
+    }
+
+    #[test]
+    fn a_criterion_a_figure_or_a_parameter_written_twice_is_refused() {
+        let cases = [
+            r#"{"criteria":{"cost_eur":"min","cost_eur":"max"},"candidates":[]}"#,
+            r#"{"criteria":{"cost_eur":"min"},"candidates":[{"name":"a","metrics":{"cost_eur":{"value":9},"cost_eur":{"value":1}}}]}"#,
+            r#"{"criteria":{"cost_eur":"min"},"candidates":[{"name":"a","parameters":{"w_mm":1,"w_mm":2}}]}"#,
+        ];
+        for text in cases {
+            match Study::from_json(text, &Config::default()) {
+                Err(DexpError::BadJson(message)) => {
+                    assert!(message.contains("written twice"), "{message}")
+                }
+                other => panic!("{text}: {other:?}"),
+            }
+        }
+    }
+
+    #[test]
+    fn a_json_array_is_not_a_study() {
+        for text in [r#"[{"cost_eur":"min"},[]]"#, r#"  [{"cost_eur":"min"},[]]"#] {
+            assert!(
+                matches!(
+                    Study::from_json(text, &Config::default()),
+                    Err(DexpError::BadJson(_))
+                ),
+                "{text}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_study_cut_at_any_place_is_an_error_and_never_a_panic() {
+        let text = serde_json::to_string(&study(vec![
+            cand("a \u{e9}", 1.0, 2.0),
+            cand("b", 2.0, 1.0),
+        ]))
+        .unwrap();
+        for end in (0..text.len()).filter(|i| text.is_char_boundary(*i)) {
+            assert!(
+                matches!(
+                    Study::from_json(&text[..end], &Config::default()),
+                    Err(DexpError::BadJson(_))
+                ),
+                "cut at {end}"
+            );
+        }
+    }
+
+    #[test]
+    fn with_a_tolerance_two_alternatives_never_beat_each_other() {
+        let mut state = 11u64;
+        let mut next = || {
+            state = state
+                .wrapping_mul(6_364_136_223_846_793_005)
+                .wrapping_add(1_442_695_040_888_963_407);
+            f64::from((state >> 33) as u32 % 20) + 90.0
+        };
+        let config = Config {
+            equal_within: 0.05,
+            ..Config::default()
+        };
+        for round in 0..500 {
+            let a = cand("a", next(), next());
+            let b = cand("b", next(), next());
+            let s = study(vec![a.clone(), b.clone()]);
+            assert!(
+                !(s.beats(&a, &b, &config) && s.beats(&b, &a, &config)),
+                "round {round}"
+            );
+            assert!(!s.beats(&a, &a, &config), "round {round}");
+        }
     }
 }
