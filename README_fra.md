@@ -46,7 +46,7 @@ Chaque ligne est une partie de ce dépôt et le feu dit où elle en est aujourd'
 | Domaine | État | Ce que cela veut dire ici |
 |---|---|---|
 | Contrôles du dépôt | 🟡 | Le contrôle du dépôt, celui des images et les 68 tests de la base tournent dans la CI et réussissent. |
-| Tests | 🟡 | Les 65 tests du code Rust et les 68 de la base réussissent sur un ordinateur. Ils n'utilisent que des données faites par les tests eux-mêmes. Elles incluent une simulation à graine fixe de les outils qui calculent les chiffres, avec pannes injectées et reprise. |
+| Tests | 🟡 | Les 66 tests du code Rust et les 68 de la base réussissent sur un ordinateur. Ils n'utilisent que des données faites par les tests eux-mêmes. Elles incluent une simulation à graine fixe de les outils qui calculent les chiffres, avec pannes injectées et reprise. |
 | Matériel réel | 🟠 | Non exécuté sur une machine ni une carte : rien ici n'a été essayé sur du matériel. |
 | Fonction prévue | 🟠 | Écrit : les alternatives avec paramètres et chiffres sourcés, l'ensemble non dominé avec qui bat chacune des autres, la différence entre deux alternatives et la grille déterministe. Non écrit : la comparaison des branches de l'historique de conception et toute recherche plus fine. |
 | Exigences | 🟠 | 4 des 5 exigences sont au stade de prototype ; la comparaison des branches de l'historique est seulement prévue. Aucune n'est validée. |
@@ -125,6 +125,7 @@ EH3D-DESIGN-EXPLORER/
 
 **Limites connues aujourd'hui**
 
+* Avec le réglage `equal_within` supérieur à 0 (0 par défaut, exact), trois alternatives peuvent se dépasser en cercle : aucune des trois n'est alors non dominée et le front peut être vide.
 * Code initial : n'a tourné que sur des données de ses propres tests ; il ne calcule aucun chiffre, n'applique aucun changement à une conception et ne lance aucun travail.
 
 **Ensuite**

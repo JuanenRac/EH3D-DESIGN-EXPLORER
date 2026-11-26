@@ -770,6 +770,49 @@ mod tests {
         }
     }
 
+    /// A known limit, written down here and in the documents: equality within a tolerance does not carry over from one pair to the next, so three alternatives can beat each other
+    /// in a circle and the non-dominated set is then empty.
+    #[test]
+    fn with_a_tolerance_three_alternatives_can_beat_each_other_in_a_circle() {
+        // 100 and 108 count as equal and so do 108 and 116, but 100 is better than 116
+        let three = |name: &str, v: [f64; 3]| Candidate {
+            name: name.into(),
+            parameters: BTreeMap::new(),
+            metrics: BTreeMap::from([
+                ("x".to_string(), m(v[0])),
+                ("y".to_string(), m(v[1])),
+                ("z".to_string(), m(v[2])),
+            ]),
+        };
+        let s = Study {
+            criteria: BTreeMap::from([
+                ("x".to_string(), Goal::Min),
+                ("y".to_string(), Goal::Min),
+                ("z".to_string(), Goal::Min),
+            ]),
+            candidates: vec![
+                three("a", [100.0, 116.0, 108.0]),
+                three("b", [108.0, 100.0, 116.0]),
+                three("c", [116.0, 108.0, 100.0]),
+            ],
+        };
+        let within = Config {
+            equal_within: 0.1,
+            ..Config::default()
+        };
+        let placed = s.placements(&within);
+        let by: Vec<&[String]> = placed.iter().map(|p| p.dominated_by.as_slice()).collect();
+        assert_eq!(by[0], ["b".to_string()]);
+        assert_eq!(by[1], ["c".to_string()]);
+        assert_eq!(by[2], ["a".to_string()]);
+        assert!(placed.iter().all(|p| !p.non_dominated && !p.incomplete));
+        // with the default of an exact comparison nobody beats anybody
+        assert!(s
+            .placements(&Config::default())
+            .iter()
+            .all(|p| p.non_dominated));
+    }
+
     #[test]
     fn with_a_tolerance_two_alternatives_never_beat_each_other() {
         let mut state = 11u64;
