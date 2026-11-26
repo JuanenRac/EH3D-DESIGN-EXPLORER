@@ -3,6 +3,9 @@
 All notable changes to this project are documented here.
 
 ## [Unreleased]
+
+## [0.0.5] - Repeated criteria and parameters are refused, and many more tests
+
 - **A criterion, a figure or a parameter written twice is refused:** the last one took the place of the first in silence and changed which alternatives were dominated. This applies to studies and to sweep specifications.
 - **A JSON array is no longer read as a study or a sweep:** only an object is.
 - **8 more tests** of the Rust code: a study cut at every place, seeded grids with every combination once, the largest sweep and the tolerance never making two alternatives beat each other.
