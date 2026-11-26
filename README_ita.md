@@ -46,7 +46,7 @@ Ogni riga è una parte di questo repository e il semaforo dice a che punto è og
 | Area | Stato | Cosa significa qui |
 |---|---|---|
 | Controlli del repository | 🟡 | Il controllo del repository, quello delle immagini e i 68 test della base girano nella CI e passano. |
-| Test | 🟡 | I 65 test del codice Rust e i 68 della base passano su un computer. Usano solo dati prodotti dai test stessi. Includono una simulazione a seme fisso di gli strumenti che calcolano le cifre, con guasti iniettati e ripristino. |
+| Test | 🟡 | I 66 test del codice Rust e i 68 della base passano su un computer. Usano solo dati prodotti dai test stessi. Includono una simulazione a seme fisso di gli strumenti che calcolano le cifre, con guasti iniettati e ripristino. |
 | Hardware reale | 🟠 | Non eseguito su nessuna macchina né scheda: nulla qui è stato provato su hardware. |
 | Funzione pianificata | 🟠 | Scritto: le alternative con parametri e cifre con fonte, l'insieme non dominato con chi batte ciascuna delle altre, la differenza tra due alternative e la griglia deterministica. Non scritto: il confronto dei rami della cronologia di progetto e qualsiasi ricerca più intelligente. |
 | Requisiti | 🟠 | 4 dei 5 requisiti sono a livello di prototipo; il confronto dei rami della cronologia è solo pianificato. Nessuno è validato. |
@@ -125,6 +125,7 @@ EH3D-DESIGN-EXPLORER/
 
 **Limiti noti oggi**
 
+* Con l'impostazione `equal_within` maggiore di 0 (predefinito 0, esatto) tre alternative possono superarsi in cerchio: nessuna delle tre è allora non dominata e il fronte può restare vuoto.
 * Codice iniziale: eseguito solo su dati dei propri test; non calcola alcuna cifra, non applica alcuna modifica a un progetto e non avvia alcun lavoro.
 
 **Prossimi passi**

@@ -19,9 +19,13 @@ The official state of each capability is in `REQUIREMENTS.md`. The register has 
 * EH3D-DESIGN-VERIFIER: the checks to use as criteria.
 * EH3D-DESIGN-HISTORY: the branches to compare.
 
+## Known limits
+
+* With `equal_within` above 0 (the default is 0, an exact comparison) equality does not carry over from one pair of alternatives to the next: three of them can beat each other in a circle, and then none of the three is in the non-dominated set, which can be empty. A test shows it (`with_a_tolerance_three_alternatives_can_beat_each_other_in_a_circle`).
+
 ## Known technical debt and omitted tests
 
-* 65 tests of the Rust code (nine of them keep this register true) and the 68 of the base (65 of them test the shared tools of the base); the Rust tests build their own studies and never touch real data.
+* 66 tests of the Rust code (nine of them keep this register true) and the 68 of the base (65 of them test the shared tools of the base); the Rust tests build their own studies and never touch real data.
 * Eight of the tests run the simulation (`src/simulation.rs`): the three failures that can be injected (a crash, a figure without its source, a figure that is not finite), the comparison that leaves a failed alternative out and the recovery.
 * Not tested: very large studies.
 * `cargo deny` is not run yet.
