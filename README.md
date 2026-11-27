@@ -46,7 +46,7 @@ Each line is one part of this repository and the light says how far it is today.
 | Area | State | What it means here |
 |---|---|---|
 | Repository checks | 🟡 | The repository check, the check of the pictures and the 68 tests of the base run in CI and pass. |
-| Tests | 🟡 | 66 tests of the Rust code and the 68 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the tools that compute the figures with injected faults and recovery. |
+| Tests | 🟡 | 67 tests of the Rust code and the 68 of the base pass on a computer. They use only data made by the tests themselves. They include a seeded simulation of the tools that compute the figures with injected faults and recovery. |
 | Real hardware | 🟠 | Not run on any machine or board: nothing here has been tried on hardware. |
 | Planned function | 🟠 | Written: the alternatives with parameters and sourced figures, the non-dominated set with who beats each of the others, the difference between two alternatives and the deterministic grid. Not written: the comparison of branches of the design history and any smarter search. |
 | Requirements | 🟠 | 4 of the 5 requirements are at prototype; the comparison of branches of the history is only planned. None is validated. |
