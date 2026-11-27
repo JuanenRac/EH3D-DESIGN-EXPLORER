@@ -46,7 +46,7 @@ Jede Zeile ist ein Teil dieses Repositorys, und die Ampel sagt, wie weit er heut
 | Bereich | Stand | Was das hier bedeutet |
 |---|---|---|
 | Repository-Prüfungen | 🟡 | Die Repository-Prüfung, die Prüfung der Bilder und die 68 Tests der Basis laufen in der CI und bestehen. |
-| Tests | 🟡 | Die 67 Tests des Rust-Codes und die 68 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten der Tests selbst. Dazu gehört eine Simulation mit festem Seed für die Werkzeuge, die die Kennzahlen berechnen, mit eingespeisten Fehlern und Wiederherstellung. |
+| Tests | 🟡 | Die 68 Tests des Rust-Codes und die 68 der Basis bestehen auf einem Rechner. Sie verwenden nur Daten der Tests selbst. Dazu gehört eine Simulation mit festem Seed für die Werkzeuge, die die Kennzahlen berechnen, mit eingespeisten Fehlern und Wiederherstellung. |
 | Echte Hardware | 🟠 | Auf keiner Maschine und keiner Platine ausgeführt: nichts hier wurde auf Hardware ausprobiert. |
 | Geplante Funktion | 🟠 | Geschrieben: die Alternativen mit Parametern und Zahlen mit Quelle, die nicht dominierte Menge mit der Angabe, wer jede andere schlägt, der Unterschied zwischen zwei Alternativen und das deterministische Raster. Nicht geschrieben: der Vergleich von Zweigen der Entwurfshistorie und jede klügere Suche. |
 | Anforderungen | 🟠 | 4 der 5 Anforderungen sind im Prototyp; der Vergleich von Zweigen der Historie ist nur geplant. Keine ist validiert. |
