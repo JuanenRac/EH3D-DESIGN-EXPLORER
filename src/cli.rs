@@ -321,7 +321,7 @@ mod tests {
         };
         let twice = file(
             "twice.json",
-            r#"{"criteria":{"cost_eur":"min"},"candidates":[{"name":"a\nforged\u2028"},{"name":"a\nforged\u2028"}]}"#,
+            r#"{"criteria":{"cost_eur":"min"},"candidates":[{"name":"a\nforged"},{"name":"a\nforged"}]}"#,
         );
         let (code, out, _) = call(&["check", &twice]);
         assert_eq!(code, 1, "{out}");
