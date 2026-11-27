@@ -107,7 +107,15 @@ fn dispatch(
         }
         ["compare", path, first, second] => {
             let study = Study::from_json(&text(path)?, &config).map_err(Some)?;
-            let changes = study.difference(first, second).map_err(Some)?;
+            let mut changes = study.difference(first, second).map_err(Some)?;
+            // A figure that `front` treats as equal must not be called better here.
+            for change in &mut changes {
+                if let ("metric", Some(x), Some(y)) = (change.kind, change.from, change.to) {
+                    if (x - y).abs() <= config.equal_within * x.abs().max(y.abs()) {
+                        change.better = "equal";
+                    }
+                }
+            }
             let _ = writeln!(out, "{}", pretty(&changes));
             if changes.is_empty() {
                 let _ = writeln!(
@@ -236,5 +244,40 @@ mod tests {
         let (code, _, err) = run_args(&["--config", &cfg, "sweep", &spec]);
         assert_eq!(code, 2);
         assert!(err.contains("limit exceeded"), "{err}");
+    }
+
+    #[test]
+    fn compare_calls_no_side_better_when_the_front_treats_the_figures_as_equal() {
+        let work = tempfile::tempdir().unwrap();
+        let study = work.path().join("s.json");
+        let settings = work.path().join("c.cfg");
+        std::fs::write(
+            &study,
+            r#"{"criteria":{"mass_g":"min"},"candidates":[
+                {"name":"a","metrics":{"mass_g":{"value":100.0,"source":"t 1"}}},
+                {"name":"b","metrics":{"mass_g":{"value":100.5,"source":"t 1"}}}]}"#,
+        )
+        .unwrap();
+        std::fs::write(&settings, "equal_within = 0.01\n").unwrap();
+        let run = |args: &[&str]| {
+            let args: Vec<String> = args.iter().map(|a| a.to_string()).collect();
+            let (mut out, mut err) = (Vec::new(), Vec::new());
+            let code = crate::cli::run(&args, &mut out, &mut err);
+            (code, String::from_utf8(out).unwrap())
+        };
+        let path = study.to_str().unwrap();
+        let (code, text) = run(&[
+            "--config",
+            settings.to_str().unwrap(),
+            "compare",
+            path,
+            "a",
+            "b",
+        ]);
+        assert_eq!(code, 0, "{text}");
+        assert!(text.contains(r#""better": "equal""#), "{text}");
+        let (code, text) = run(&["compare", path, "a", "b"]);
+        assert_eq!(code, 0, "{text}");
+        assert!(text.contains(r#""better": "first""#), "{text}");
     }
 }

@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+- **`compare` agrees with `front` about equality:** with `equal_within` above 0, `compare` named a better side for figures that `front` treats as equal. It now says `equal`.
+- **1 more test** of the Rust code, for the above.
 - **A limit of the tolerance of equality is written down:** with `equal_within` above 0 (default 0) three alternatives can beat each other in a circle, so that none of them is in the non-dominated set and the set can be empty. `docs/STATUS.md` and the eight READMEs say it and one new test shows it. Nothing changes in how alternatives are compared.
 
 ## [0.0.5] - Repeated criteria and parameters are refused, and many more tests
